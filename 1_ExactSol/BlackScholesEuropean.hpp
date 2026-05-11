@@ -26,11 +26,21 @@ private:
 
 public:
 
-	double r;		// Risk free interest rate
-	double sig;		// Volatility
-	double K;		// Strike price
-	double T;		// Maturity time in years
-	double b;		// Cost of carry
+	double r;		// risk free interest rate
+	double sig;		// volatility
+	double K;		// strike price
+	double T;		// maturity time, time left to expiry (years)
+
+	/*
+	Cost of carry
+	b = r		Black-Scholes stock option model
+	b = r - q	Merton stock option model with continuous dividend yield
+	b = 0		Black futures option model
+	b = r - rf	Garman and Kohlhagen currency option model, rf = 'foreign' interest rate
+	*/
+	double b;		
+
+	
 
 	OptionType optType;	// (call, put)
 	string unam;	// Name of underlying asset

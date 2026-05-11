@@ -1,104 +1,79 @@
 #include "BlackScholesEuropean.hpp"
 #include <iostream>
 
-/* 
-	b = r		Black-Scholes stock option model
-	b = r - q	Merton stock option model with continuous dividend yield
-	b = 0		Black futures option model
-	b = r - rf	Garman and Kohlhagen currency option model, rf = 'foreign' interest rate
-*/
-
 int main()
 {
-	// Call option on a stock (b = r by default)
-	BlackScholesEuropean callOption(typeCall);
+	// Call option using default values
+	BlackScholesEuropean option1(typeCall);
 	cout << "S: "; 
 	double S; 
 	cin >> S;
-	cout << "Option on a stock: " << callOption.Price(S) << endl;
+	cout << "Call Option on a stock: " << option1.Price(S) << endl;
 
-	// Option on a stock index
-	BlackScholesEuropean indexOption(typeCall);
-	indexOption.K = 70.0;
-	indexOption.T = 0.75;
-	indexOption.r = 0.10;
-	indexOption.sig = 0.28;
+	////////////////////////////////////////////////////////////////
+	
+	// call option with modified values + dividend yield
+	BlackScholesEuropean option2(typeCall);
+	option2.K = 70.0;
+	option2.T = 0.75;
+	option2.r = 0.10;
+	option2.sig = 0.28;
 
-	double q = 0.0;		// Dividend yield
-	indexOption.b = indexOption.r - q;
+	double q = 0.0;				// !! Dividend yield TO STOCK HOLDERS, not to options holders
+								// percentage in annum, continuous compounding
+	double C = 0.0, P = 0.0;	// call/put option price
 
-	double C = indexOption.Price(S);
-	cout << (indexOption.optType == typeCall ? "Call" : "Put") << " option on an index: " << C << endl;
+	q = 0.0;
+	option2.b = option2.r - q;
+	C = option2.Price(S);
+	cout << "Call option on a stock with DY = " << q << " : " << C << endl;
 
-	indexOption.ChangeTo(typePut);
+	q = 0.05;
+	option2.b = option2.r - q;
+	C = option2.Price(S);
+	cout << "Call option on a stock with DY = " << q << " : " << C << endl;
 
-	double P = indexOption.Price(S);
-	cout << (indexOption.optType == typeCall ? "Call" : "Put") << " option on an index: " << P << endl;
+	option2.ChangeTo(typePut);
 
-	indexOption.PutCallParity(S, C, P);
+	P = option2.Price(S);
+	cout << "Put  option on a stock with DY = " << q << " : " << P << endl;
 
-	// Options on a future
+	cout << "Parity check: " << option2.PutCallParity(S, C, P) << endl;
+
+	////////////////////////////////////////////////////////////////
+
+	// calculate delta (sensitivity), call and put options on a future
 	BlackScholesEuropean futureOption(typePut);
-	futureOption.K = 20.0;
-	futureOption.T = 0.75;
+	futureOption.K = 100.0;
+	futureOption.T = 0.5;
 	futureOption.r = 0.10;
-	futureOption.sig = 0.28;
-
+	futureOption.sig = 0.36;
 	futureOption.b = 0.0;
 
-	cout << "Put option on a future: " << futureOption.Price(20.0) << endl;
+	cout << "Delta on put  future: " << futureOption.Delta(105.0) << endl;
 
-	// Now change over to a call on the option
 	futureOption.ChangeTo(typeCall);
-	cout << "Call option on a future: " << futureOption.Price(20.0) << endl;
-
-
-	// Call option on currency
-	BlackScholesEuropean currencyOption(typeCall);
-	currencyOption.K = 1.60;
-	currencyOption.T = 0.5;
-	currencyOption.r = 0.06;
-	currencyOption.sig = 0.12;
-
-	double rf = 0.08;		// risk-free rate of foreign currency
-	currencyOption.b = currencyOption.r - rf;
-
-	cout << "Call option on a currency: " << currencyOption.Price(1.56) << endl;
-
-	// Call and put options on a future: Delta and Elasticity
-	BlackScholesEuropean futureOption2(typePut);
-	futureOption2.K = 100.0;
-	futureOption2.T = 0.5;
-	futureOption2.r = 0.10;
-	futureOption2.sig = 0.36;
-
-	futureOption2.b = 0.0;
-
-	cout << "Delta on a put future: " << futureOption2.Delta(105.0) << endl;
-
-	// Now change over to a call on the option
-	futureOption2.ChangeTo(typeCall);
-	cout << "Delta on a call future: " << futureOption2.Delta(105.0) << endl;
+	cout << "Delta on call future: " << futureOption.Delta(105.0) << endl;
 	
-	// Some more data for testing; Calcuate price and delta a
+	////////////////////////////////////////////////////////////////
+
+	// calcuate price and delta
 	BlackScholesEuropean stockOption(typeCall);
 	stockOption.K = 60.0;
 	stockOption.T = 0.75;
 	stockOption.r = 0.10;
 	stockOption.sig = 0.30;
-
 	stockOption.b = stockOption.r;
-
 
 	// Calculating theta of a European stock index
 	BlackScholesEuropean indexOption2(typePut);
 	indexOption2.K = 405.0;
-	indexOption2.T = 0.0833;	// One month expiration
+	indexOption2.T = 0.0833;
 	indexOption2.r = 0.07;
 	indexOption2.sig = 0.20;
 
-	double divYield = 0.05;		// Dividend yield, 5% per annum
-	indexOption2.b = indexOption2.r - divYield;
+	double q = 0.05;		// Dividend yield, 5% annually
+	indexOption2.b = indexOption2.r - q;
 
 
 	// Stock Option: Rho

@@ -8,11 +8,11 @@ using namespace std;
 BlackScholesEuropean::BlackScholesEuropean(const OptionType& optionType) : optType(optionType)
 {
 	//  default values
-	r	= 0.05;		// risk-free interest rate
-	sig = 0.2;		// volatility
-	K	= 110.0;	// strike price
-	T	= 0.5;		// time left to expiry
-	b	= r;		// Black and Scholes stock option model (1973)
+	r	= 0.05;
+	sig = 0.2;
+	K	= 100.0;
+	T	= 1;
+	b	= r;	// black scholes model b=r
 }
 
 BlackScholesEuropean::~BlackScholesEuropean()
