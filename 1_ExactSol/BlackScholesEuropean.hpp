@@ -49,4 +49,5 @@ public:	// Public functions
 	double Delta(const double S) const;
 
 	void ChangeTo(const OptionType& optionType);
+	bool PutCallParity(const double& S, const double& C, const double& P) const;
 };

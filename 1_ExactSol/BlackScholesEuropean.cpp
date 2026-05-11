@@ -128,3 +128,19 @@ void BlackScholesEuropean::ChangeTo(const OptionType& optionType)
 {
 	optType = optionType;
 }
+
+bool BlackScholesEuropean::PutCallParity(const double& S, const double& C, const double& P) const
+{
+	double Cpart = C + K * exp(-r * T);
+	double Ppart = S * exp((b - r) * T) + P;
+	
+	// floating-point comparison
+	double tolerance = 1e-7;
+	bool is_equal = abs(Cpart - Ppart) < tolerance;
+
+	if (!is_equal) {
+		cout << "Parity Violation! Diff: " << abs(Cpart - Ppart) << endl;
+	}
+
+	return is_equal;
+}

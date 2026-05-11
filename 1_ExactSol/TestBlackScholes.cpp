@@ -27,7 +27,15 @@ int main()
 	double q = 0.0;		// Dividend yield
 	indexOption.b = indexOption.r - q;
 
-	cout << indexOption.optType << " option on an index: " << indexOption.Price(50.0) << endl;
+	double C = indexOption.Price(S);
+	cout << (indexOption.optType == typeCall ? "Call" : "Put") << " option on an index: " << C << endl;
+
+	indexOption.ChangeTo(typePut);
+
+	double P = indexOption.Price(S);
+	cout << (indexOption.optType == typeCall ? "Call" : "Put") << " option on an index: " << P << endl;
+
+	indexOption.PutCallParity(S, C, P);
 
 	// Options on a future
 	BlackScholesEuropean futureOption(typePut);
