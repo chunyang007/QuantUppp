@@ -56,8 +56,12 @@ public:	// Public functions
 
 	// Functions that calculate option price and sensitivities
 	double Price(const double S) const;
-	double Delta(const double S) const;
-
+	double Delta(const double S) const; // sensitivity to underlying price, "speed" of stock price
+	
+	double CallGamma(const double S) const; // sensitivity to Delta, "acceleration" of stock price
+	double CallVega(const double S) const;  // sensitivity to volatility
+	double CallTheta(const double S) const; // sensitivity to time decay
+	
 	void ChangeTo(const OptionType& optionType);
 	bool PutCallParity(const double& S, const double& C, const double& P) const;
 };

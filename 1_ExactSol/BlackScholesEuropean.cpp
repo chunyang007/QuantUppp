@@ -75,18 +75,18 @@ double BlackScholesEuropean::N(double x) const
 
 double BlackScholesEuropean::CallPrice(const double S) const
 {
-	double denom = sig * sqrt(T);
-	double d1 = ( log(S/K) + (b + (sig*sig)/2 ) * T ) / denom;
-	double d2 = d1 - denom;
+	double tmp = sig * sqrt(T);
+	double d1 = ( log(S/K) + (b + (sig*sig)/2 ) * T ) / tmp;
+	double d2 = d1 - tmp;
 
 	return (S * exp((b-r)*T) * N(d1)) - (K * exp(-r * T) * N(d2));
 }
 
 double BlackScholesEuropean::PutPrice(const double S) const
 {
-	double denom = sig * sqrt(T);
-	double d1 = ( log(S/K) + (b + (sig*sig)/2 ) * T ) / denom;
-	double d2 = d1 - denom;
+	double tmp = sig * sqrt(T);
+	double d1 = ( log(S/K) + (b + (sig*sig)/2 ) * T ) / tmp;
+	double d2 = d1 - tmp;
 
 	return (K * exp(-r * T)* N(-d2)) - (S * exp((b-r)*T) * N(-d1));
 }
@@ -121,7 +121,31 @@ double BlackScholesEuropean::Delta(const double S) const
 		return CallDelta(S);
 	else // typePut
 		return PutDelta(S);
+}
 
+double BlackScholesEuropean::CallGamma(const double S) const
+{
+	double tmp = sig * sqrt(T);
+	double d1 = ( log(S/K) + (b + (sig*sig)/2 ) * T )/ tmp;
+	return exp((b-r)*T) * n(d1) / (S * tmp);
+}
+
+double BlackScholesEuropean::CallVega(const double S) const
+{
+	double tmp = sig * sqrt(T);
+	double d1 = ( log(S/K) + (b + (sig*sig)/2 ) * T )/ tmp;
+	return S * exp((b-r)*T) * n(d1) * sqrt(T);
+}
+
+double BlackScholesEuropean::CallTheta(const double S) const
+{
+	double tmp = sig * sqrt(T);
+	double d1 = ( log(S/K) + (b + (sig*sig)/2 ) * T )/ tmp;
+	double d2 = d1 - tmp;
+	double term1 = -(S * sig * exp((b-r)*T) * n(d1) ) / (2 * sqrt(T));
+	double term2 = (b-r) * S * exp((b-r)*T) * N(d1);
+	double term3 = r * K * exp(-r * T) * N(d2);
+	return term1 - term2 - term3;
 }
 
 void BlackScholesEuropean::ChangeTo(const OptionType& optionType)
