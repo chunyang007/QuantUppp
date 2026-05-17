@@ -21,6 +21,24 @@ void ATSM::setParameters(double kappa, double theta, double sig)
 	this->sig = sig;
 }
 
+vector<double> ATSM::price(const vector<double>& xarr, const double& t) const
+{
+	vector<double> result;
+
+	// TODO
+
+	return result;
+}
+
+vector<vector<double> > ATSM::price(const vector<double>& xarr, const vector<double>& tarr) const
+{
+	vector<vector<double>> result;
+
+	// TODO
+
+	return result;
+}
+
 
 AffineCIR::AffineCIR(double kappa, double theta, double sig) : ATSM(kappa, theta, sig) {}
 
@@ -29,7 +47,7 @@ AffineCIR::AffineCIR(double kappa, double theta, double sig) : ATSM(kappa, theta
 * t = time to maturity
 * returns bond price (P)
 */
-double AffineCIR::price(double r, double t) const
+double AffineCIR::price(const double& r, const double& t) const
 {
 	double h = sqrt(kappa * kappa + 2.0 * sig * sig);
 
@@ -53,7 +71,7 @@ AffineVasicek::AffineVasicek(double kappa, double theta, double sig) : ATSM(kapp
 * t = time to maturity
 * returns bond price (P)
 */
-double AffineVasicek::price(double r, double t) const
+double AffineVasicek::price(const double& r, const double& t) const
 {
 	double B = (1.0 - exp(-kappa * t)) / kappa;
 	double A = exp((theta - sig * sig / (2.0 * kappa * kappa)) * (B - t) - (sig * sig * B * B) / (4.0 * kappa));
