@@ -3,11 +3,45 @@
 
 using namespace std;
 
-extern double kappa;
-extern double theta;
-extern double sig;
+class ATSM // affine term structure model
+{
+	/*
+	* virtual destructor for abstract/interface class is a must to ensure correct 
+	* destructor is called based on the actual object type, not the pointer type. 
+	* If the destructor is not virtual, 
+	* deleting an object through a pointer to the base class 
+	* will result in undefined behavior as there is no implementation of 
+	* destructor of the derived class.
+	*/
 
-double priceCIR(double r, double t);
-double priceVasicek(double r, double t);
-vector<double> priceAffine(const vector<double>& xarr, double t, double (*affineModel)(double x, double t));
-vector<vector<double> > priceAffine(const vector<double>& xarr, const vector<double>& tarr, double (*affineModel)(double x, double t));
+public:	
+	ATSM(double kappa = 0.0, double theta = 0.1, double sig = 0.0);
+	virtual ~ATSM() = default;
+	virtual double price(double x, double t) const = 0;
+
+	void setParameters(const double kappa, const double theta, const double sig);
+	double getKappa() const { return kappa; }
+	double getTheta() const { return theta; }
+	double getSig() const { return sig; }
+
+protected:
+	double kappa; // speed of mean reversion
+	double theta; // long-term mean level
+	double sig;	  // volatility
+};
+
+class AffineCIR : public ATSM
+{
+public:
+	AffineCIR(double kappa = 0.0, double theta = 0.1, double sig = 0.0);
+	~AffineCIR() override = default;
+	double price(double x, double t) const override;
+};
+
+class AffineVasicek : public ATSM
+{
+public:
+	AffineVasicek(double kappa = 0.0, double theta = 0.1, double sig = 0.0);
+	~AffineVasicek() override = default;
+	double price(double x, double t) const override;
+};
