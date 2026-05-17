@@ -1,7 +1,7 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-#include "CIR.hpp"
+#include "ATSM.hpp"
 using namespace std;
 
 // dr = (a - br)dt + sig r^1/2 dW
@@ -10,13 +10,13 @@ double theta; // long-term mean level
 double sig;	  // volatility
 
 /*
-r = current short rate at time t
-t = time to maturity
-
-returns bond price (P)
+* // CIR zero-coupon bond
+* r = current short rate at time t
+* t = time to maturity
+* returns bond price (P)
 */
 double priceCIR(double r, double t)
-{ // CIR zero-coupon bond
+{ 
 	double h = sqrt(kappa * kappa + 2.0 * sig * sig);
 
 	double tmp1 = exp(h * t) - 1.0;
@@ -31,8 +31,14 @@ double priceCIR(double r, double t)
 	return P;
 }
 
+/*
+* // Vasicek zero-coupon bond
+* r = current short rate at time t
+* t = time to maturity
+* returns bond price (P)
+*/
 double priceVasicek(double r, double t)
-{ // Vasicek zero-coupon bond
+{	
 	double B = (1.0 - exp(-kappa * t)) / kappa;
 	double A = exp((theta - sig * sig / (2.0 * kappa * kappa)) * (B - t) - (sig * sig * B * B) / (4.0 * kappa));
 	
